@@ -6,6 +6,11 @@ namespace FASTX.tree
     {
         private List<ItemsetNode<T>> ChildrenNodes = new List<ItemsetNode<T>>();
 
+        public ItemsetNode()
+        {
+            Position = -1;
+        }
+
         public ItemsetNode(Itemset<T> itemset, ItemsetNode<T> parent, SparseIdList sparseIdList, int position)
         {
             Itemset = itemset;
