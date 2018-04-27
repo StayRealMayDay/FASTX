@@ -45,7 +45,7 @@ namespace FASTX
         }
 
         /// <summary>
-        /// 
+        /// this function is used to sequence extemsion, you need to find at least one node in the sequence which position is behind this node
         /// </summary>
         /// <param name="node"></param>
         /// <returns></returns>
@@ -53,7 +53,7 @@ namespace FASTX
         {
             while (null != node)
             {
-                if (this.SparseId < node.SparseId)
+                if (SparseId < node.SparseId)
                 {
                     return node;
                 }
