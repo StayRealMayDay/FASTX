@@ -4,9 +4,23 @@ namespace FASTX.tree
 {
     public class ItemsetNode<T>
     {
-        private int position;
-        private List<ItemsetNode<T>> childrenNodes = new List<ItemsetNode<T>>();
-        private ItemsetNode<T> parent;
-        private Itemset<T> itemset;
+        private List<ItemsetNode<T>> ChildrenNodes = new List<ItemsetNode<T>>();
+
+        public ItemsetNode(Itemset<T> itemset, ItemsetNode<T> parent, SparseIdList sparseIdList, int position)
+        {
+            Itemset = itemset;
+            Parent = parent;
+            SparseIdList = sparseIdList;
+            Position = position;
+        }
+
+        public List<ItemsetNode<T>> GetChildren => ChildrenNodes;
+        public int Position { get; private set; }
+        
+        public  ItemsetNode<T> Parent { get; private set; }
+        
+        public Itemset<T> Itemset { get; private set; }
+        
+        public  SparseIdList SparseIdList { get; private set; }
     }
 }
