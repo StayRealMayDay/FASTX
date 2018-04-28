@@ -13,6 +13,14 @@ namespace FASTX
             }
         }
 
+        public Itemset(params T[] items)
+        {
+            foreach (var item in items)
+            {
+                Element.Add(item);
+            }
+        }
+
         public IEnumerator<T> GetEnumerator() => Element.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
@@ -28,18 +36,18 @@ namespace FASTX
         public bool Remove(T item) => Element.Remove(item);
 
         public int Count => Element.Count;
-        
+
         public bool IsReadOnly => false;
-        
-        public int IndexOf(T item) =>  Element.IndexOf(item);
-        
+
+        public int IndexOf(T item) => Element.IndexOf(item);
+
 
         public void Insert(int index, T item) => Element.Insert(index, item);
 
         public void RemoveAt(int index) => Element.RemoveAt(index);
 
         private List<T> Element = new List<T>();
-        
+
         public T this[int index]
         {
             get => Element[index];

@@ -42,6 +42,12 @@ namespace FASTX
             ItemSILDic = new Dictionary<string, SparseIdList>();
         }
 
+        /// <summary>
+        /// read data from file and return a dictionary(string, SIL)
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="support"></param>
+        /// <returns></returns>
         public static DataSet ReadDate(string path, int support)
         {
             var data = File.ReadAllLines(path);
@@ -82,6 +88,9 @@ namespace FASTX
             return dataSet;
         }
 
+        /// <summary>
+        /// delete those item which not satisfy the support condition
+        /// </summary>
         public void ComputeFrequentItems()
         {
             var newDic = new Dictionary<string, SparseIdList>();
@@ -94,6 +103,11 @@ namespace FASTX
             }
 
             ItemSILDic = newDic;
+        }
+
+        public Dictionary<string, SparseIdList> GetItemSILDic()
+        {
+            return ItemSILDic;
         }
 
     }
