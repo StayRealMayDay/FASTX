@@ -21,6 +21,28 @@ namespace FASTX
             }
         }
 
+        public string Display()
+        {
+            var temp = Element[0].ToString();
+            for (int i = 1; i < Element.Count; i++)
+            {
+                temp = " " + Element[i].ToString();
+            }
+
+            return temp;
+        }
+
+        public Itemset<T> Clone()
+        {
+            var other = new Itemset<T>();
+            foreach (var element in Element)
+            {
+                other.Element.Add(element);
+            }
+
+            return other;
+        }
+
         public IEnumerator<T> GetEnumerator() => Element.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

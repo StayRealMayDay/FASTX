@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using FASTX.tree;
 
 namespace FASTX
@@ -37,6 +38,21 @@ namespace FASTX
 
         private void ItemsetExtension(ItemsetTree<string> itemsetTree, ItemsetNode<string> node)
         {
+            var position = 0;
+            var children = node.Parent.GetChildren;
+            for (int i = node.Position + 1; i < children.Count; i++)
+            {
+                var rightBrother = children[i];
+                var SIL = SparseIdList.IStep(node.SparseIdList, rightBrother.SparseIdList);
+                if (SIL.Support > DataSet.MinSupport)
+                {
+                    var newItemset = node.Itemset.Clone();
+                    newItemset.AddItems(rightBrother.Itemset.Last());
+                    DataSet.GetItemSILDic().Add(newItemset.Display(), SIL);
+                    itemsetTree.AddChild(node, newItemset, SIL, position);
+                    position++;
+                }
+            }
             
         }
     }
