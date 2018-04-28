@@ -121,6 +121,22 @@ namespace FASTX
             return sparseIdList;
         }
 
+        /// <summary>
+        /// pick the first element of each transaction in the SIL to generate the VIL
+        /// </summary>
+        /// <returns></returns>
+        public VerticalIdList GetStartingVIL()
+        {
+            ListNode[] VILElements = new ListNode[GetLength()];
+
+            for (int i = 0; i < VILElements.Length; i++)
+            {
+                VILElements[i] = GetElement(i, 0);
+            }
+            
+            return new VerticalIdList(VILElements, Support);
+        }
+
         public int Support { get; private set; }
 
         /// <summary>
