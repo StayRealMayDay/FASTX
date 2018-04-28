@@ -102,9 +102,18 @@ namespace FASTX
             return SequenceTree;
         }
 
+        /// <summary>
+        /// extension a sequence,pick all the VIL of the sequence's brothers(include itself) one by one to do the VIL merge
+        /// we need a ListNode[] array to store the new sequence's VIL
+        /// after the merge operation, if the new sequence is ferquent, we need to insert the new sequence node(the brother node) to the sequence tree as the child of this sequence node 
+        /// </summary>
+        /// <param name="sequenceTree"></param>
+        /// <param name="node"></param>
         private void SequenceExtension(SequenceTree<string> sequenceTree, SequenceNode<string> node)
         {
+            // to stiore the support
             var count = 0;
+            //to store the new sequence VIL
             ListNode[] newPositionList;
             ListNode listNode, listBrotherNode;
             var nodeVIL = node.VerticalIdList;
