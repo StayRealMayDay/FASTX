@@ -54,6 +54,17 @@ namespace FASTX
             return Elements.Count;
         }
 
+        public Sequence<T> Clone()
+        {
+            var other = new Sequence<T>();
+            foreach (var element in Elements)
+            {
+                other.AddItemset(element.Clone());
+            }
+
+            return other;
+        }
+
         /// <summary>
         /// sequence is a list of Itemset
         /// </summary>

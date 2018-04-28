@@ -12,6 +12,9 @@ namespace FASTX
 
         private SequenceTree<string> SequenceTree { get; set; }
 
+        /// <summary>
+        /// use a queue to pick up all the itemset node and do extension
+        /// </summary>
         private void ItemsetExtension()
         {
             var itemsetTree = new ItemsetTree<string>();
@@ -19,23 +22,32 @@ namespace FASTX
             var queue = new Queue<ItemsetNode<string>>();
             var position = 0;
             ItemsetNode<string> node;
+            // first insert all the item in the itemset tree as the children of the root's children
             foreach (var item in DataSet.GetItemSILDic())
             {
-                var tempNode = itemsetTree.AddChild(root, new Itemset<string>(item.Key), item.Value, position++);
-                queue.Enqueue(tempNode);
+                node = itemsetTree.AddChild(root, new Itemset<string>(item.Key), item.Value, position++);
+                queue.Enqueue(node);
             }
-
+            // then pick up every node of the root node'children do the extension
             while (queue.Count != 0)
             {
-                var tempNode = queue.Dequeue();
-                ItemsetExtension(itemsetTree, tempNode);
-                foreach (var child in tempNode.GetChildren)
+                node = queue.Dequeue();
+                ItemsetExtension(itemsetTree, node);
+                foreach (var child in node.GetChildren)
                 {
                     queue.Enqueue(child);
                 }
             }
         }
 
+        /// <summary>
+        /// extension a itemset, we pick up the node's SIL, and its right borther's SIL, we do IStep and if its support bigger than minSupport
+        /// we neet to merge the itemset of the node whit the item in the last position of the node's right brother's itemset
+        /// then we insert the new itemset into the itemset tree with the position
+        /// we store all the itemset in the DataSet's ItemSILDic
+        /// </summary>
+        /// <param name="itemsetTree"></param>
+        /// <param name="node"></param>
         private void ItemsetExtension(ItemsetTree<string> itemsetTree, ItemsetNode<string> node)
         {
             var position = 0;
@@ -54,6 +66,93 @@ namespace FASTX
                 }
             }
             
+        }
+
+        /// <summary>
+        /// the same with the itemset extension ,picku all the sequence node and do sequence extension
+        /// </summary>
+        /// <returns></returns>
+        private SequenceTree<string> SequenceExtension()
+        {
+            SequenceTree = new SequenceTree<string>(DataSet.NumberOfRows);
+            
+            var queue = new Queue<SequenceNode<string>>();
+            Sequence<string> s;
+            SequenceNode<string> node;
+            // first we insert all the itemset into the sequence tree as the children of the root node
+            foreach (var frequentItemset in DataSet.GetItemSILDic())
+            {
+                s = new Sequence<string>(new Itemset<string>(frequentItemset.Key.Split(' ')));
+                var VIL = frequentItemset.Value.GetStartingVIL();
+                node = SequenceTree.AddChild(SequenceTree.Root, s, VIL, frequentItemset.Value.Support);
+                queue.Enqueue(node);
+            }
+
+            // then we pick every node of the root's children then do the the sequence extension
+            while (queue.Count != 0)
+            {
+                node = queue.Dequeue();
+                SequenceExtension(SequenceTree, node);
+                foreach (var child in node.GetChildren)
+                {
+                    queue.Enqueue(child);
+                }
+            }
+
+            return SequenceTree;
+        }
+
+        private void SequenceExtension(SequenceTree<string> sequenceTree, SequenceNode<string> node)
+        {
+            var count = 0;
+            ListNode[] newPositionList;
+            ListNode listNode, listBrotherNode;
+            var nodeVIL = node.VerticalIdList;
+            VerticalIdList brotherVIL;
+            var brothers = node.Parent.GetChildren;
+            foreach (var brotherNode in brothers)
+            {
+                newPositionList = new ListNode[nodeVIL.Elements.Length];
+                brotherVIL = brotherNode.VerticalIdList;
+                for (int i = 0; i < nodeVIL.Elements.Length; i++)
+                {
+                    listNode = nodeVIL.Elements[i];
+                    listBrotherNode = brotherVIL.Elements[i];
+                    if ((listNode == null) || (listBrotherNode == null))
+                    {
+                        continue;;
+                    }
+
+                    if (listNode.GetSparseId < listBrotherNode.GetSparseId)
+                    {
+                        newPositionList[i] = listBrotherNode;
+                        count++;
+                    }
+
+                    if (listNode.GetSparseId >= listBrotherNode.GetSparseId)
+                    {
+                        while ((listBrotherNode != null) && (listNode.GetSparseId >= listBrotherNode.GetSparseId))
+                        {
+                            listBrotherNode = listBrotherNode.GetNext;
+                        }
+
+                        if (listBrotherNode != null && listBrotherNode.GetSparseId > listNode.GetSparseId)
+                        {
+                            newPositionList[i] = listBrotherNode;
+                            count++;
+                        }
+                    }
+                }
+
+                if (count > DataSet.MinSupport)
+                {
+                    var sequence = node.Sequence.Clone();
+                    sequence.AddItemset(brotherNode.Sequence.GetLastItemset());
+                    sequenceTree.AddChild(node, sequence, new VerticalIdList(newPositionList, count), count);
+                }
+
+                count = 0;
+            }
         }
     }
 }
