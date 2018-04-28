@@ -42,9 +42,11 @@ namespace FASTX
             ItemSILDic = new Dictionary<string, SparseIdList>();
         }
 
-        public DataSet ReadDate(string path, int support)
+        public static DataSet ReadDate(string path, int support)
         {
             var data = File.ReadAllLines(path);
+            var dataSet = new DataSet(data.Length, support);
+            int lineNumber = 0;
             foreach (var line in data)
             {
                 if (line.Length == 0)
@@ -66,9 +68,32 @@ namespace FASTX
                     {
                         break;;
                     }
-                   // SparseIdList inserted = 
+
+                    if (!dataSet.ItemSILDic.ContainsKey(item))
+                    {
+                        dataSet.ItemSILDic.Add(item, new SparseIdList(data.Length));
+                    }
+                    dataSet.ItemSILDic[item].AddElement(lineNumber, transactionId);
+                }
+                lineNumber++;
+            }
+
+            dataSet.ComputeFrequentItems();
+            return dataSet;
+        }
+
+        public void ComputeFrequentItems()
+        {
+            var newDic = new Dictionary<string, SparseIdList>();
+            foreach (var KeyValue in ItemSILDic)
+            {
+                if (KeyValue.Value.Support > MinSupport)
+                {
+                    newDic.Add(KeyValue.Key, KeyValue.Value);
                 }
             }
+
+            ItemSILDic = newDic;
         }
 
     }
