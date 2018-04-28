@@ -116,17 +116,22 @@ namespace FASTX
             //to store the new sequence VIL
             ListNode[] newPositionList;
             ListNode listNode, listBrotherNode;
+            // pick up the VIL of this Node
             var nodeVIL = node.VerticalIdList;
+            // used to store the VIL of its brothers
             VerticalIdList brotherVIL;
+            // in this way we get all the node of its brother and itself 
             var brothers = node.Parent.GetChildren;
             foreach (var brotherNode in brothers)
             {
+                //init it
                 newPositionList = new ListNode[nodeVIL.Elements.Length];
                 brotherVIL = brotherNode.VerticalIdList;
                 for (int i = 0; i < nodeVIL.Elements.Length; i++)
                 {
                     listNode = nodeVIL.Elements[i];
                     listBrotherNode = brotherVIL.Elements[i];
+                    // if this List node is null or its brother is null just ignore it
                     if ((listNode == null) || (listBrotherNode == null))
                     {
                         continue;;
@@ -138,6 +143,7 @@ namespace FASTX
                         count++;
                     }
 
+                    // find the brother node which the sequence position is behind this node
                     if (listNode.GetSparseId >= listBrotherNode.GetSparseId)
                     {
                         while ((listBrotherNode != null) && (listNode.GetSparseId >= listBrotherNode.GetSparseId))
@@ -153,6 +159,7 @@ namespace FASTX
                     }
                 }
 
+                //if the borthe node exist we insert it in to the sequence tree whih the VIL
                 if (count > DataSet.MinSupport)
                 {
                     var sequence = node.Sequence.Clone();
