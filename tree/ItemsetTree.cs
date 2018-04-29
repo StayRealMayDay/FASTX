@@ -1,4 +1,6 @@
-﻿namespace FASTX.tree
+﻿using System;
+
+namespace FASTX.tree
 {
     public class ItemsetTree<T>
     {
@@ -16,5 +18,28 @@
         }
 
         public ItemsetNode<T> GetRoot => Root;
+
+        public void PrintTheTree()
+        {
+            Display(Root, "--");
+        }
+
+        public void Display(ItemsetNode<T> itemsetNode, string gap)
+        {
+            
+            foreach (var node in itemsetNode.GetChildren)
+            {
+                var newGap = gap;
+                foreach (var item in node.GetItemset)
+                {
+                    newGap += "--";
+                    Console.Write(gap);
+                    Console.Write(" " + item);
+                    Console.WriteLine();
+                }
+                Display(node, newGap);
+            }
+            
+        }
     }
 }

@@ -28,7 +28,7 @@ namespace FASTX.tree
         public List<ItemsetNode<T>> GetChildren => ChildrenNodes;
         
         /// <summary>
-        /// store the position of this itemset in the sequence
+        /// store the position of this itemset in the children of its parent node
         /// </summary>
         public int Position { get; private set; }
         
@@ -41,7 +41,11 @@ namespace FASTX.tree
         /// store itemset of this node
         /// </summary>
         public Itemset<T> Itemset { get; private set; }
-        
+
+        /// <summary>
+        /// Get the Itemset of this Node
+        /// </summary>
+        public Itemset<T> GetItemset => Itemset;
         /// <summary>
         /// store the SIL of this Itemset
         /// </summary>

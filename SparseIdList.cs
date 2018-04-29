@@ -105,9 +105,7 @@ namespace FASTX
                         sparseIdList.AddElement(i, aNode.GetSparseId);
                         aNode = aNode.GetNext;
                         bNode = bNode.GetNext;
-                    }
-
-                    if (aNode.GetSparseId > bNode.GetSparseId)
+                    }else if (aNode.GetSparseId > bNode.GetSparseId)
                     {
                         bNode = bNode.GetNext;
                     }

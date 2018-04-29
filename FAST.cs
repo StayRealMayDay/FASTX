@@ -10,6 +10,8 @@ namespace FASTX
 
         private DataSet DataSet { get; set; }
 
+        private ItemsetTree<string> ItemsetTree { get; set; }
+
         private SequenceTree<string> SequenceTree { get; set; }
 
         /// <summary>
@@ -17,22 +19,22 @@ namespace FASTX
         /// </summary>
         private void ItemsetExtension()
         {
-            var itemsetTree = new ItemsetTree<string>();
-            var root = itemsetTree.GetRoot;
+            ItemsetTree = new ItemsetTree<string>();
+            var root = ItemsetTree.GetRoot;
             var queue = new Queue<ItemsetNode<string>>();
             var position = 0;
             ItemsetNode<string> node;
             // first insert all the item in the itemset tree as the children of the root's children
             foreach (var item in DataSet.GetItemSILDic())
             {
-                node = itemsetTree.AddChild(root, new Itemset<string>(item.Key), item.Value, position++);
+                node = ItemsetTree.AddChild(root, new Itemset<string>(item.Key), item.Value, position++);
                 queue.Enqueue(node);
             }
             // then pick up every node of the root node'children do the extension
             while (queue.Count != 0)
             {
                 node = queue.Dequeue();
-                ItemsetExtension(itemsetTree, node);
+                ItemsetExtension(ItemsetTree, node);
                 foreach (var child in node.GetChildren)
                 {
                     queue.Enqueue(child);
@@ -169,6 +171,13 @@ namespace FASTX
 
                 count = 0;
             }
+        }
+
+        public void RunAlgorithm(string filePath, int support)
+        {
+            DataSet = DataSet.ReadData(filePath, support);
+            ItemsetExtension();
+            SequenceTree = SequenceExtension();
         }
     }
 }

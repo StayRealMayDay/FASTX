@@ -48,7 +48,7 @@ namespace FASTX
         /// <param name="path"></param>
         /// <param name="support"></param>
         /// <returns></returns>
-        public static DataSet ReadDate(string path, int support)
+        public static DataSet ReadData(string path, int support)
         {
             var data = File.ReadAllLines(path);
             var dataSet = new DataSet(data.Length, support);
