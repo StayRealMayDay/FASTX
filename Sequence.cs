@@ -54,6 +54,10 @@ namespace FASTX
             return Elements.Count;
         }
 
+        /// <summary>
+        /// clone a new same sequence, usually used in sequence extension
+        /// </summary>
+        /// <returns></returns>
         public Sequence<T> Clone()
         {
             var other = new Sequence<T>();
