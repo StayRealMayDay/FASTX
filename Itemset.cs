@@ -6,6 +6,10 @@ namespace FASTX
 {
     public class Itemset<T> : IList<T>
     {
+        /// <summary>
+        /// add some item to the itemset, use , to separate the items
+        /// </summary>
+        /// <param name="items"></param>
         public void AddItems(params T[] items)
         {
             foreach (var item in items)
@@ -14,6 +18,11 @@ namespace FASTX
             }
         }
 
+        /// <summary>
+        /// init function,provide the all the item one by one use , to separate
+        /// this is how key word params used
+        /// </summary>
+        /// <param name="items"></param>
         public Itemset(params T[] items)
         {
             foreach (var item in items)
@@ -22,6 +31,10 @@ namespace FASTX
             }
         }
 
+        /// <summary>
+        /// connect the item together turn it into a string,and it easy to print
+        /// </summary>
+        /// <returns></returns>
         public string Display()
         {
             var temp = "" + Element[0];
@@ -33,6 +46,10 @@ namespace FASTX
             return temp;
         }
 
+        /// <summary>
+        /// clone a new same itemset , usually used in item extension 
+        /// </summary>
+        /// <returns></returns>
         public Itemset<T> Clone()
         {
             var other = new Itemset<T>();
