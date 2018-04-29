@@ -14,7 +14,7 @@ namespace FASTX
         {
             foreach (var itemset in itemsets)
             {
-                Elements.AddLast(itemset);
+                Elements.Add(itemset);
             }
         }
 
@@ -24,7 +24,7 @@ namespace FASTX
         /// <param name="itemset"></param>
         public void AddItemset(Itemset<T> itemset)
         {
-            Elements.AddLast(itemset);
+            Elements.Add(itemset);
         }
 
         /// <summary>
@@ -68,7 +68,9 @@ namespace FASTX
         /// <summary>
         /// sequence is a list of Itemset
         /// </summary>
-        private LinkedList<Itemset<T>> Elements = new LinkedList<Itemset<T>>();
-        
+        private List<Itemset<T>> Elements = new List<Itemset<T>>();
+
+        public List<Itemset<T>> GetElements => Elements;
+
     }
 }

@@ -24,22 +24,21 @@ namespace FASTX.tree
             Display(Root, "--");
         }
 
-        public void Display(ItemsetNode<T> itemsetNode, string gap)
+        private void Display(ItemsetNode<T> itemsetNode, string gap)
         {
-            
+            if (itemsetNode.GetChildren.Count == 0) return;
             foreach (var node in itemsetNode.GetChildren)
             {
                 var newGap = gap;
+                Console.Write(gap);
                 foreach (var item in node.GetItemset)
                 {
                     newGap += "--";
-                    Console.Write(gap);
                     Console.Write(" " + item);
-                    Console.WriteLine();
                 }
+                Console.WriteLine();
                 Display(node, newGap);
             }
-            
         }
     }
 }

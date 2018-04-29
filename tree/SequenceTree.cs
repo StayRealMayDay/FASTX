@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace FASTX.tree
 {
@@ -15,7 +16,7 @@ namespace FASTX.tree
         /// <param name="NumSequences"></param>
         public SequenceTree(int NumSequences)
         {
-            Root = new SequenceNode<T>(null, new Sequence<T>(), null,  NumSequences);
+            Root = new SequenceNode<T>(null, new Sequence<T>(), null, NumSequences);
         }
 
         /// <summary>
@@ -26,13 +27,14 @@ namespace FASTX.tree
         /// <param name="verticalIdList"></param>
         /// <param name="support"></param>
         /// <returns></returns>
-        public SequenceNode<T> AddChild(SequenceNode<T> parent, Sequence<T> sequence, VerticalIdList verticalIdList, int support)
+        public SequenceNode<T> AddChild(SequenceNode<T> parent, Sequence<T> sequence, VerticalIdList verticalIdList,
+            int support)
         {
             var newNode = new SequenceNode<T>(verticalIdList, sequence, parent, support);
             parent.GetChildren.Add(newNode);
             return newNode;
         }
-        
+
         /// <summary>
         /// use a List to store all the sequence node with the DFS
         /// </summary>
@@ -59,6 +61,34 @@ namespace FASTX.tree
 
             return result;
         }
-        
+
+        /// <summary>
+        /// print all the sequence of this sequence tree
+        /// </summary>
+        public void PrintSequenceTree()
+        {
+            Itemset<T>[] sequence = new Itemset<T>[100];
+            Display(Root);
+        }
+
+        /// <summary>
+        /// recusive print every node of the sequence tree
+        /// </summary>
+        /// <param name="node"></param>
+        private void Display(SequenceNode<T> node)
+        {
+            if (node.GetChildren.Count == 0) return;
+            foreach (var child in node.GetChildren)
+            {
+                for (int i = 0; i < child.Sequence.GetLength(); i++)
+                {
+                    Console.Write(child.Sequence.GetElements[i].Display() + ",");
+                }
+
+                Console.WriteLine();
+
+                Display(child);
+            }
+        }
     }
 }

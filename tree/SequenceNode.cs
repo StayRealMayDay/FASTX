@@ -11,7 +11,7 @@ namespace FASTX.tree
         public SequenceNode<T> Parent { get; private set; }
 
         /// <summary>
-        /// each frequence correspond to a sequenceNode in the sequence Tree
+        /// each frequence sequence correspond to a sequenceNode in the sequence Tree
         /// </summary>
         public Sequence<T> Sequence { get; private set; }
 

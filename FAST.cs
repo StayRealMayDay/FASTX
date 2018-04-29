@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FASTX.tree;
 
@@ -7,13 +8,30 @@ namespace FASTX
     public class FAST<T>
     {
 
-
+        /// <summary>
+        /// store all the frequent itemset SIL in a dictionary
+        /// </summary>
         private DataSet DataSet { get; set; }
 
+        /// <summary>
+        /// itemset tree
+        /// </summary>
         private ItemsetTree<string> ItemsetTree { get; set; }
 
+        /// <summary>
+        /// sequence tree
+        /// </summary>
         private SequenceTree<string> SequenceTree { get; set; }
 
+        /// <summary>
+        /// Get the sequence Tree
+        /// </summary>
+        public SequenceTree<string> GetSequenceTree => SequenceTree;
+
+        /// <summary>
+        /// Get Itemset tree
+        /// </summary>
+        public ItemsetTree<string> GeItemsetTree => ItemsetTree;
         /// <summary>
         /// use a queue to pick up all the itemset node and do extension
         /// </summary>
@@ -173,6 +191,11 @@ namespace FASTX
             }
         }
 
+        /// <summary>
+        /// run this algorithm
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="support"></param>
         public void RunAlgorithm(string filePath, int support)
         {
             DataSet = DataSet.ReadData(filePath, support);

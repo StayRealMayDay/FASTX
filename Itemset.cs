@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace FASTX
@@ -23,10 +24,10 @@ namespace FASTX
 
         public string Display()
         {
-            var temp = Element[0].ToString();
+            var temp = "" + Element[0];
             for (int i = 1; i < Element.Count; i++)
             {
-                temp = " " + Element[i].ToString();
+                temp += " " + Element[i];
             }
 
             return temp;
