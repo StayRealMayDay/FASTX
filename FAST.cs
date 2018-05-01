@@ -138,7 +138,8 @@ namespace FASTX
             ListNode listNode, listBrotherNode;
             // pick up the VIL of this Node
             var nodeVIL = node.VerticalIdList;
-            //store those ListNode which have the same relative position  
+            //store those ListNode which have the same relative position  ,first int is the relative position, and the second int is the sequenceID
+            //used to create the VIL of the new sequence.
             var positionDic = new Dictionary<int, Dictionary<int, ListNode>>();
             // used to store the VIL of its brothers
             VerticalIdList brotherVIL;
@@ -163,11 +164,13 @@ namespace FASTX
                         ;
                     }
 
+                    // find the node which listBrotherNode SID bigger than listNode SID
                     while ((listBrotherNode != null) && (listNode.GetSparseId >= listBrotherNode.GetSparseId))
                     {
                         listBrotherNode = listBrotherNode.GetNext;
                     }
 
+                    // store all the back node with the relative position in a dictionary(relativeposition, dictionary(sequenceID, ListNode))
                     while (listBrotherNode != null)
                     {
                         var relativePosition = listBrotherNode.GetSparseId - listNode.GetSparseId;
@@ -184,7 +187,7 @@ namespace FASTX
                         listBrotherNode = listBrotherNode.GetNext;
                     }
                 }
-
+                // if the have the relative position sequence if frequent, create its VIL and then insert in to the tree with its VIL
                 foreach (var keyValue in positionDic)
                 {
                     if (keyValue.Value.Count > DataSet.MinSupport)
