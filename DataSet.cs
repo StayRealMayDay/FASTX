@@ -17,24 +17,25 @@ namespace FASTX
 
         /// <summary>
         /// map each sequens to its SparseIdList,
-        /// the first int is the item
-        /// second item is the extension item
-        /// third item is the support of this two item pattern
+        
         /// </summary>
         public Dictionary<string, SparseIdList> ItemSILDic { get; private set; }
 
         /// <summary>
         /// Store the CMap information for I-Extension
-        /// first int is the item
-        /// second int is the extension item
+        /// first string is the item
+        /// second string is the extension item
         /// third int is the support of this pattern
         /// </summary>
-        public Dictionary<int, Dictionary<int, int>> CMapIExtension { get; private set; }
+        public Dictionary<string, Dictionary<string, List<int>>> CMapIExtension { get; private set; }
 
         /// <summary>
         /// Store the CMap information for S-Extension
+        /// the first string is the item
+        /// second string is the extension item
+        /// third int is the support of this two item pattern
         /// </summary>
-        public Dictionary<int, Dictionary<int, int>> CMapSExtension { get; private set; }
+        public Dictionary<string, Dictionary<string, List<int>>> CMapSExtension { get; private set; }
 
         /// <summary>
         /// Number of roes (sequences)
@@ -56,8 +57,8 @@ namespace FASTX
             NumberOfRows = numberOfRows;
             MinSupport = minSupport;
             ItemSILDic = new Dictionary<string, SparseIdList>();
-            CMapIExtension = new Dictionary<int, Dictionary<int, int>>();
-            CMapSExtension = new Dictionary<int, Dictionary<int, int>>();
+            CMapIExtension = new Dictionary<string, Dictionary<string, List<int>>>();
+            CMapSExtension = new Dictionary<string, Dictionary<string, List<int>>>();
         }
 
         /// <summary>
@@ -105,7 +106,47 @@ namespace FASTX
 
                         if (samteItemset)
                         {
-                            
+                            if (dataSet.CMapIExtension.ContainsKey(itemList[i]))
+                            {
+                                if (dataSet.CMapIExtension[itemList[i]].ContainsKey(itemList[j]))
+                                {
+                                    if (!dataSet.CMapIExtension[itemList[i]][itemList[j]].Contains(lineNumber))
+                                    {
+                                        dataSet.CMapIExtension[itemList[i]][itemList[j]].Add(lineNumber);
+                                    }
+                                }
+                                else
+                                {
+                                    dataSet.CMapIExtension[itemList[i]].Add(itemList[j], new List<int>(){lineNumber});
+                                }
+                            }
+                            else
+                            {
+                                dataSet.CMapIExtension.Add(itemList[i], new Dictionary<string, List<int>>());
+                                dataSet.CMapIExtension[itemList[i]].Add(itemList[j], new List<int>(){lineNumber});
+                            }
+                        }
+                        else
+                        {
+                            if (dataSet.CMapSExtension.ContainsKey(itemList[i]))
+                            {
+                                if (dataSet.CMapSExtension[itemList[i]].ContainsKey(itemList[j]))
+                                {
+                                    if (!dataSet.CMapSExtension[itemList[i]][itemList[j]].Contains(lineNumber))
+                                    {
+                                        dataSet.CMapSExtension[itemList[i]][itemList[j]].Add(lineNumber);
+                                    }
+                                }
+                                else
+                                {
+                                    dataSet.CMapSExtension[itemList[i]].Add(itemList[j], new List<int>(){lineNumber});
+                                }
+                            }
+                            else
+                            {
+                                dataSet.CMapSExtension.Add(itemList[i], new Dictionary<string, List<int>>());
+                                dataSet.CMapSExtension[itemList[i]].Add(itemList[j], new List<int>(){lineNumber});
+                            }
                         }
                         
                     }
