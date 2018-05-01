@@ -17,11 +17,17 @@ namespace FASTX
 
         /// <summary>
         /// map each sequens to its SparseIdList,
+        /// the first int is the item
+        /// second item is the extension item
+        /// third item is the support of this two item pattern
         /// </summary>
         public Dictionary<string, SparseIdList> ItemSILDic { get; private set; }
 
         /// <summary>
         /// Store the CMap information for I-Extension
+        /// first int is the item
+        /// second int is the extension item
+        /// third int is the support of this pattern
         /// </summary>
         public Dictionary<int, Dictionary<int, int>> CMapIExtension { get; private set; }
 
