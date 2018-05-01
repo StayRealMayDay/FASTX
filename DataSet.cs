@@ -114,7 +114,7 @@ namespace FASTX
                             if (dataSet.CMapIExtension.ContainsKey(itemList[i]))
                             {    //whether contain the item[j]
                                 if (dataSet.CMapIExtension[itemList[i]].ContainsKey(itemList[j]))
-                                {
+                                {    // if not contain this line then add it to the dictionay
                                     if (!dataSet.CMapIExtension[itemList[i]][itemList[j]].Contains(lineNumber))
                                     {
                                         dataSet.CMapIExtension[itemList[i]][itemList[j]].Add(lineNumber);
