@@ -139,7 +139,7 @@ namespace FASTX
             // pick up the VIL of this Node
             var nodeVIL = node.VerticalIdList;
             //store those ListNode which have the same relative position  
-            var positionDic = new Dictionary<int, ListNode>();
+            var positionDic = new Dictionary<int, Dictionary<int, ListNode>>();
             // used to store the VIL of its brothers
             VerticalIdList brotherVIL;
             // in this way we get all the node of its brother and itself 
@@ -170,14 +170,68 @@ namespace FASTX
 
                     while (listBrotherNode != null)
                     {
-                        
+                        var relativePosition = listBrotherNode.GetSparseId - listNode.GetSparseId;
+                        if (positionDic.ContainsKey(relativePosition))
+                        {
+                            positionDic[relativePosition].Add(i, listBrotherNode);
+                        }
+                        else
+                        {
+                            positionDic.Add(relativePosition, new Dictionary<int, ListNode>());
+                            positionDic[relativePosition].Add(i, listBrotherNode);
+                        }
+
+                        listBrotherNode = listBrotherNode.GetNext;
                     }
-                    if (listBrotherNode != null && listNode.GetSparseId < listBrotherNode.GetSparseId)
+                }
+
+                foreach (var keyValue in positionDic)
+                {
+                    if (keyValue.Value.Count > DataSet.MinSupport)
                     {
-                        newPositionList[i] = listBrotherNode;
-                        count++;
+                        foreach (var sequenceIdWithListNode in keyValue.Value)
+                        {
+                            newPositionList[sequenceIdWithListNode.Key] = sequenceIdWithListNode.Value;
+                        }
+                        var sequence = node.Sequence.Clone();
+                        sequence.AddItemset(brotherNode.Sequence.GetLastItemset());
+                        sequenceTree.AddChild(node, sequence, new VerticalIdList(newPositionList, keyValue.Value.Count),
+                            keyValue.Value.Count);
                     }
-                    
+                }
+            }
+        }
+        
+//         private void SequenceExtension(SequenceTree<string> sequenceTree, SequenceNode<string> node)
+//        {
+//            // to stiore the support
+//            var count = 0;
+//            //to store the new sequence VIL
+//            ListNode[] newPositionList;
+//            ListNode listNode, listBrotherNode;
+//            // pick up the VIL of this Node
+//            var nodeVIL = node.VerticalIdList;
+//            
+//            // used to store the VIL of its brothers
+//            VerticalIdList brotherVIL;
+//            // in this way we get all the node of its brother and itself 
+//            var brothers = node.Parent.GetChildren;
+//            foreach (var brotherNode in brothers)
+//            {
+//                //init it
+//                newPositionList = new ListNode[nodeVIL.Elements.Length];
+//                //pick up the VIL of the brother Node
+//                brotherVIL = brotherNode.VerticalIdList;
+//                for (int i = 0; i < nodeVIL.Elements.Length; i++)
+//                {
+//                    listNode = nodeVIL.Elements[i];
+//                    listBrotherNode = brotherVIL.Elements[i];
+//                    // if this List node is null or its brother is null just ignore it
+//                    if ((listNode == null) || (listBrotherNode == null))
+//                    {
+//                        continue;
+//                        ;
+//                    }                    
 //                    if (listNode.GetSparseId < listBrotherNode.GetSparseId)
 //                    {
 //                        newPositionList[i] = listBrotherNode;
@@ -198,19 +252,19 @@ namespace FASTX
 //                            count++;
 //                        }
 //                    }
-                }
-
-                //if the borthe node exist we insert it in to the sequence tree whih the VIL
-                if (count > DataSet.MinSupport)
-                {
-                    var sequence = node.Sequence.Clone();
-                    sequence.AddItemset(brotherNode.Sequence.GetLastItemset());
-                    sequenceTree.AddChild(node, sequence, new VerticalIdList(newPositionList, count), count);
-                }
-
-                count = 0;
-            }
-        }
+//                }
+//
+//                //if the borthe node exist we insert it in to the sequence tree whih the VIL
+//                if (count > DataSet.MinSupport)
+//                {
+//                    var sequence = node.Sequence.Clone();
+//                    sequence.AddItemset(brotherNode.Sequence.GetLastItemset());
+//                    sequenceTree.AddChild(node, sequence, new VerticalIdList(newPositionList, count), count);
+//                }
+//
+//                count = 0;
+//            }
+//        }
 
         /// <summary>
         /// run this algorithm
