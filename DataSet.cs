@@ -89,12 +89,17 @@ namespace FASTX
                         transactionId++;
                         continue;
                     }
-
+                    if (itemList[i] == SEQUENCE_SEPARATOR)
+                    {
+                        break;
+                    }
+                    // used to judge whether need to do CMapIextension operation(indicate whether the two item in the same itemset)
                     var samteItemset = true;
                     for (int j = i + 1; j < itemList.Length; j++)
                     {
                         if (itemList[j] == ITEMSET_SEPARATOR)
                         {
+                            // when item is -1 change the value
                             samteItemset = false;
                             continue;
                         }
@@ -103,11 +108,11 @@ namespace FASTX
                         {
                             break;
                         }
-
+                        // extension the IExtension CMap
                         if (samteItemset)
-                        {
+                        {   // if it contain the item[i]
                             if (dataSet.CMapIExtension.ContainsKey(itemList[i]))
-                            {
+                            {    //whether contain the item[j]
                                 if (dataSet.CMapIExtension[itemList[i]].ContainsKey(itemList[j]))
                                 {
                                     if (!dataSet.CMapIExtension[itemList[i]][itemList[j]].Contains(lineNumber))
@@ -120,14 +125,14 @@ namespace FASTX
                                     dataSet.CMapIExtension[itemList[i]].Add(itemList[j], new List<int>(){lineNumber});
                                 }
                             }
-                            else
+                            else // if not we should init it and add the item[j] whit lineNumber to it
                             {
                                 dataSet.CMapIExtension.Add(itemList[i], new Dictionary<string, List<int>>());
                                 dataSet.CMapIExtension[itemList[i]].Add(itemList[j], new List<int>(){lineNumber});
                             }
                         }
                         else
-                        {
+                        {   // the same with CMapIExtension
                             if (dataSet.CMapSExtension.ContainsKey(itemList[i]))
                             {
                                 if (dataSet.CMapSExtension[itemList[i]].ContainsKey(itemList[j]))
@@ -150,10 +155,7 @@ namespace FASTX
                         }
                         
                     }
-                    if (itemList[i] == SEQUENCE_SEPARATOR)
-                    {
-                        break;;
-                    }
+                    
 
                     if (!dataSet.ItemSILDic.ContainsKey(itemList[i]))
                     {
@@ -161,6 +163,27 @@ namespace FASTX
                     }
                     dataSet.ItemSILDic[itemList[i]].AddElement(lineNumber, transactionId);
                 }
+                lineNumber++;
+            }
+
+            dataSet.ComputeFrequentItems();
+            return dataSet;
+        }
+        
+//        public static DataSet ReadData(string path, int support)
+//        {
+//            var data = File.ReadAllLines(path);
+//            var dataSet = new DataSet(data.Length, support);
+//            int lineNumber = 0;
+//            foreach (var line in data)
+//            {
+//                if (line.Length == 0)
+//                {
+//                   continue;
+//                }
+//
+//                var transactionId = 1;
+//                var itemList = line.Split(' ');
 //                foreach (var item in itemList)
 //                {
 //                    if (item == ITEMSET_SEPARATOR)
@@ -180,12 +203,12 @@ namespace FASTX
 //                    }
 //                    dataSet.ItemSILDic[item].AddElement(lineNumber, transactionId);
 //                }
-                lineNumber++;
-            }
-
-            dataSet.ComputeFrequentItems();
-            return dataSet;
-        }
+//                lineNumber++;
+//            }
+//
+//            dataSet.ComputeFrequentItems();
+//            return dataSet;
+//        }
 
         /// <summary>
         /// delete those item which not satisfy the support condition
