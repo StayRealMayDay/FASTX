@@ -7,7 +7,6 @@ namespace FASTX
 {
     public class FAST<T>
     {
-
         /// <summary>
         /// store all the frequent itemset SIL in a dictionary
         /// </summary>
@@ -32,6 +31,7 @@ namespace FASTX
         /// Get Itemset tree
         /// </summary>
         public ItemsetTree<string> GeItemsetTree => ItemsetTree;
+
         /// <summary>
         /// use a queue to pick up all the itemset node and do extension
         /// </summary>
@@ -48,6 +48,7 @@ namespace FASTX
                 node = ItemsetTree.AddChild(root, new Itemset<string>(item.Key), item.Value, position++);
                 queue.Enqueue(node);
             }
+
             // then pick up every node of the root node'children do the extension
             while (queue.Count != 0)
             {
@@ -85,7 +86,6 @@ namespace FASTX
                     position++;
                 }
             }
-            
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace FASTX
         private SequenceTree<string> SequenceExtension()
         {
             SequenceTree = new SequenceTree<string>(DataSet.NumberOfRows);
-            
+
             var queue = new Queue<SequenceNode<string>>();
             Sequence<string> s;
             SequenceNode<string> node;
@@ -138,6 +138,8 @@ namespace FASTX
             ListNode listNode, listBrotherNode;
             // pick up the VIL of this Node
             var nodeVIL = node.VerticalIdList;
+            //store those ListNode which have the same relative position  
+            var positionDic = new Dictionary<int, ListNode>();
             // used to store the VIL of its brothers
             VerticalIdList brotherVIL;
             // in this way we get all the node of its brother and itself 
@@ -146,6 +148,9 @@ namespace FASTX
             {
                 //init it
                 newPositionList = new ListNode[nodeVIL.Elements.Length];
+                //clear the positionDic
+                positionDic.Clear();
+                //pick up the VIL of the brother Node
                 brotherVIL = brotherNode.VerticalIdList;
                 for (int i = 0; i < nodeVIL.Elements.Length; i++)
                 {
@@ -154,29 +159,45 @@ namespace FASTX
                     // if this List node is null or its brother is null just ignore it
                     if ((listNode == null) || (listBrotherNode == null))
                     {
-                        continue;;
+                        continue;
+                        ;
                     }
 
-                    if (listNode.GetSparseId < listBrotherNode.GetSparseId)
+                    while ((listBrotherNode != null) && (listNode.GetSparseId >= listBrotherNode.GetSparseId))
+                    {
+                        listBrotherNode = listBrotherNode.GetNext;
+                    }
+
+                    while (listBrotherNode != null)
+                    {
+                        
+                    }
+                    if (listBrotherNode != null && listNode.GetSparseId < listBrotherNode.GetSparseId)
                     {
                         newPositionList[i] = listBrotherNode;
                         count++;
                     }
-
-                    // find the brother node which the sequence position is behind this node
-                    if (listNode.GetSparseId >= listBrotherNode.GetSparseId)
-                    {
-                        while ((listBrotherNode != null) && (listNode.GetSparseId >= listBrotherNode.GetSparseId))
-                        {
-                            listBrotherNode = listBrotherNode.GetNext;
-                        }
-
-                        if (listBrotherNode != null && listBrotherNode.GetSparseId > listNode.GetSparseId)
-                        {
-                            newPositionList[i] = listBrotherNode;
-                            count++;
-                        }
-                    }
+                    
+//                    if (listNode.GetSparseId < listBrotherNode.GetSparseId)
+//                    {
+//                        newPositionList[i] = listBrotherNode;
+//                        count++;
+//                    }
+//
+//                    // find the brother node which the sequence position is behind this node
+//                    if (listNode.GetSparseId >= listBrotherNode.GetSparseId)
+//                    {
+//                        while ((listBrotherNode != null) && (listNode.GetSparseId >= listBrotherNode.GetSparseId))
+//                        {
+//                            listBrotherNode = listBrotherNode.GetNext;
+//                        }
+//
+//                        if (listBrotherNode != null && listNode.GetSparseId < listBrotherNode.GetSparseId)
+//                        {
+//                            newPositionList[i] = listBrotherNode;
+//                            count++;
+//                        }
+//                    }
                 }
 
                 //if the borthe node exist we insert it in to the sequence tree whih the VIL
