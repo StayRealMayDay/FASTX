@@ -16,9 +16,19 @@ namespace FASTX
         public static string SEQUENCE_SEPARATOR = "-2";
 
         /// <summary>
-        /// map each sequens to its SparseIdList
+        /// map each sequens to its SparseIdList,
         /// </summary>
         public Dictionary<string, SparseIdList> ItemSILDic { get; private set; }
+
+        /// <summary>
+        /// Store the CMap information for I-Extension
+        /// </summary>
+        public Dictionary<int, Dictionary<int, int>> CMapIExtension { get; private set; }
+
+        /// <summary>
+        /// Store the CMap information for S-Extension
+        /// </summary>
+        public Dictionary<int, Dictionary<int, int>> CMapSExtension { get; private set; }
 
         /// <summary>
         /// Number of roes (sequences)
@@ -40,6 +50,8 @@ namespace FASTX
             NumberOfRows = numberOfRows;
             MinSupport = minSupport;
             ItemSILDic = new Dictionary<string, SparseIdList>();
+            CMapIExtension = new Dictionary<int, Dictionary<int, int>>();
+            CMapSExtension = new Dictionary<int, Dictionary<int, int>>();
         }
 
         /// <summary>
@@ -62,25 +74,65 @@ namespace FASTX
 
                 var transactionId = 1;
                 var itemList = line.Split(' ');
-                foreach (var item in itemList)
+
+                for (int i = 0; i < itemList.Length; i++)
                 {
-                    if (item == ITEMSET_SEPARATOR)
+                    if (itemList[i] == ITEMSET_SEPARATOR)
                     {
                         transactionId++;
                         continue;
                     }
 
-                    if (item == SEQUENCE_SEPARATOR)
+                    var samteItemset = true;
+                    for (int j = i + 1; j < itemList.Length; j++)
+                    {
+                        if (itemList[j] == ITEMSET_SEPARATOR)
+                        {
+                            samteItemset = false;
+                            continue;
+                        }
+
+                        if (itemList[j] == SEQUENCE_SEPARATOR)
+                        {
+                            break;
+                        }
+
+                        if (samteItemset)
+                        {
+                            
+                        }
+                        
+                    }
+                    if (itemList[i] == SEQUENCE_SEPARATOR)
                     {
                         break;;
                     }
 
-                    if (!dataSet.ItemSILDic.ContainsKey(item))
+                    if (!dataSet.ItemSILDic.ContainsKey(itemList[i]))
                     {
-                        dataSet.ItemSILDic.Add(item, new SparseIdList(data.Length));
+                        dataSet.ItemSILDic.Add(itemList[i], new SparseIdList(data.Length));
                     }
-                    dataSet.ItemSILDic[item].AddElement(lineNumber, transactionId);
+                    dataSet.ItemSILDic[itemList[i]].AddElement(lineNumber, transactionId);
                 }
+//                foreach (var item in itemList)
+//                {
+//                    if (item == ITEMSET_SEPARATOR)
+//                    {
+//                        transactionId++;
+//                        continue;
+//                    }
+//                    
+//                    if (item == SEQUENCE_SEPARATOR)
+//                    {
+//                        break;;
+//                    }
+//
+//                    if (!dataSet.ItemSILDic.ContainsKey(item))
+//                    {
+//                        dataSet.ItemSILDic.Add(item, new SparseIdList(data.Length));
+//                    }
+//                    dataSet.ItemSILDic[item].AddElement(lineNumber, transactionId);
+//                }
                 lineNumber++;
             }
 
