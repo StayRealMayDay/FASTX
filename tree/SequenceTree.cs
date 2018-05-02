@@ -82,7 +82,8 @@ namespace FASTX.tree
             {
                 for (int i = 0; i < child.Sequence.GetLength(); i++)
                 {
-                    Console.Write(child.Sequence.GetElements[i].Display() + ",");
+                    Console.Write(child.Sequence.GetElements[i].Display() + "-->");
+                   // Console.Write(child.Sequence.GetElements[i].Display() + " |" + child.Sequence.GetRelativePositions[i] + "-->");
                 }
 
                 Console.WriteLine();

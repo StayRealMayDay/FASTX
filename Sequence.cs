@@ -84,15 +84,15 @@ namespace FASTX
         public Sequence<T> Clone()
         {
             var other = new Sequence<T>();
-//            foreach (var element in Elements)
-//            {
-//                other.AddItemset(element.Clone());
-//            }
-
-            for (int i = 0; i < Elements.Count; i++)
+            foreach (var element in Elements)
             {
-                other.AddItemsetWithRelativePosition(Elements[i].Clone(), RelativePosition[i]);
+                other.AddItemset(element.Clone());
             }
+//
+//            for (int i = 0; i < Elements.Count; i++)
+//            {
+//                other.AddItemsetWithRelativePosition(Elements[i].Clone(), RelativePosition[i]);
+//            }
 
             return other;
         }
@@ -106,6 +106,8 @@ namespace FASTX
         /// store the relative position of each itemset in the sequence
         /// </summary>
         private List<int> RelativePosition = new List<int>();
+
+        public List<int> GetRelativePositions => RelativePosition;
         
         public List<Itemset<T>> GetElements => Elements;
 

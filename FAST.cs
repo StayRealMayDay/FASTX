@@ -108,7 +108,7 @@ namespace FASTX
             // first we insert all the itemset into the sequence tree as the children of the root node
             foreach (var frequentItemset in DataSet.GetItemSILDic())
             {
-                s = new Sequence<string>(new Itemset<string>(frequentItemset.Key.Split(' ')));
+                s = new Sequence<string>(new Itemset<string>(frequentItemset.Key.Split(' ')), 0);
                 var VIL = frequentItemset.Value.GetStartingVIL();
                 node = SequenceTree.AddChild(SequenceTree.Root, s, VIL, frequentItemset.Value.Support);
                 queue.Enqueue(node);
@@ -157,6 +157,14 @@ namespace FASTX
                 newPositionList = new ListNode[nodeVIL.Elements.Length];
                 //clear the positionDic
                 positionDic.Clear();
+                //this is a point should be noticed, we may have two or more sequences have the same itemset
+                //but they have different relative position , so when we they are brother node and wo do sequence extension
+                //we may do the many times extension to add the same itemset , so we shoul avoid this situation
+                if (brotherNode != node && brotherNode.Sequence.GetLastItemset() == node.Sequence.GetLastItemset())
+                {
+                    continue;
+                    ;
+                }
                 //pick up the VIL of the brother Node
                 brotherVIL = brotherNode.VerticalIdList;
                 for (int i = 0; i < nodeVIL.Elements.Length; i++)
@@ -204,6 +212,7 @@ namespace FASTX
                         }
                         var sequence = node.Sequence.Clone();
                         sequence.AddItemset(brotherNode.Sequence.GetLastItemset());
+//                        sequence.AddItemsetWithRelativePosition(brotherNode.Sequence.GetLastItemset(), keyValue.Key);
                         sequenceTree.AddChild(node, sequence, new VerticalIdList(newPositionList, keyValue.Value.Count),
                             keyValue.Value.Count);
                     }
