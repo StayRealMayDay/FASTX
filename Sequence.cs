@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace FASTX
@@ -19,12 +20,34 @@ namespace FASTX
         }
 
         /// <summary>
-        /// add an itemset at the last of the sequence
+        /// constructor you can add an item with a init relative position
+        /// </summary>
+        /// <param name="itemset"></param>
+        /// <param name="relativePositions"></param>
+        public Sequence(Itemset<T> itemset,int relativePositions)
+        {
+            Elements.Add(itemset);
+            RelativePosition.Add(relativePositions);
+        }
+
+        /// <summary>
+        /// add an itemset at the end of the sequence
         /// </summary>
         /// <param name="itemset"></param>
         public void AddItemset(Itemset<T> itemset)
         {
             Elements.Add(itemset);
+        }
+
+        /// <summary>
+        /// add an itemset at the end of the sequence and with its relative position
+        /// </summary>
+        /// <param name="itemset"></param>
+        /// <param name="relativePosition"></param>
+        public void AddItemsetWithRelativePosition(Itemset<T> itemset, int relativePosition)
+        {
+            Elements.Add(itemset);
+            RelativePosition.Add(relativePosition);
         }
 
         /// <summary>
@@ -61,9 +84,14 @@ namespace FASTX
         public Sequence<T> Clone()
         {
             var other = new Sequence<T>();
-            foreach (var element in Elements)
+//            foreach (var element in Elements)
+//            {
+//                other.AddItemset(element.Clone());
+//            }
+
+            for (int i = 0; i < Elements.Count; i++)
             {
-                other.AddItemset(element.Clone());
+                other.AddItemsetWithRelativePosition(Elements[i].Clone(), RelativePosition[i]);
             }
 
             return other;
@@ -78,6 +106,7 @@ namespace FASTX
         /// store the relative position of each itemset in the sequence
         /// </summary>
         private List<int> RelativePosition = new List<int>();
+        
         public List<Itemset<T>> GetElements => Elements;
 
     }
