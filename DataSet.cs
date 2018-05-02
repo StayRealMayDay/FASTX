@@ -68,110 +68,6 @@ namespace FASTX
         /// <param name="path"></param>
         /// <param name="support"></param>
         /// <returns></returns>
-        public static DataSet ReadData(string path, int support)
-        {
-            var data = File.ReadAllLines(path);
-            var dataSet = new DataSet(data.Length, support);
-            int lineNumber = 0;
-            foreach (var line in data)
-            {
-                if (line.Length == 0)
-                {
-                   continue;
-                }
-
-                var transactionId = 1;
-                var itemList = line.Split(' ');
-
-                for (int i = 0; i < itemList.Length; i++)
-                {
-                    if (itemList[i] == ITEMSET_SEPARATOR)
-                    {
-                        transactionId++;
-                        continue;
-                    }
-                    if (itemList[i] == SEQUENCE_SEPARATOR)
-                    {
-                        break;
-                    }
-                    // used to judge whether need to do CMapIextension operation(indicate whether the two item in the same itemset)
-                    var samteItemset = true;
-                    for (int j = i + 1; j < itemList.Length; j++)
-                    {
-                        if (itemList[j] == ITEMSET_SEPARATOR)
-                        {
-                            // when item is -1 change the value
-                            samteItemset = false;
-                            continue;
-                        }
-
-                        if (itemList[j] == SEQUENCE_SEPARATOR)
-                        {
-                            break;
-                        }
-                        // extension the IExtension CMap
-                        if (samteItemset)
-                        {   // if it contain the item[i]
-                            if (dataSet.CMapIExtension.ContainsKey(itemList[i]))
-                            {    //whether contain the item[j]
-                                if (dataSet.CMapIExtension[itemList[i]].ContainsKey(itemList[j]))
-                                {    // if not contain this line then add it to the dictionay
-                                    if (!dataSet.CMapIExtension[itemList[i]][itemList[j]].Contains(lineNumber))
-                                    {
-                                        dataSet.CMapIExtension[itemList[i]][itemList[j]].Add(lineNumber);
-                                    }
-                                }
-                                else
-                                {
-                                    dataSet.CMapIExtension[itemList[i]].Add(itemList[j], new List<int>(){lineNumber});
-                                }
-                            }
-                            else // if not we should init it and add the item[j] whit lineNumber to it
-                            {
-                                dataSet.CMapIExtension.Add(itemList[i], new Dictionary<string, List<int>>());
-                                dataSet.CMapIExtension[itemList[i]].Add(itemList[j], new List<int>(){lineNumber});
-                            }
-                        }
-                        else
-                        {   // the same with CMapIExtension
-                            if (dataSet.CMapSExtension.ContainsKey(itemList[i]))
-                            {
-                                if (dataSet.CMapSExtension[itemList[i]].ContainsKey(itemList[j]))
-                                {
-                                    if (!dataSet.CMapSExtension[itemList[i]][itemList[j]].Contains(lineNumber))
-                                    {
-                                        dataSet.CMapSExtension[itemList[i]][itemList[j]].Add(lineNumber);
-                                    }
-                                }
-                                else
-                                {
-                                    dataSet.CMapSExtension[itemList[i]].Add(itemList[j], new List<int>(){lineNumber});
-                                }
-                            }
-                            else
-                            {
-                                dataSet.CMapSExtension.Add(itemList[i], new Dictionary<string, List<int>>());
-                                dataSet.CMapSExtension[itemList[i]].Add(itemList[j], new List<int>(){lineNumber});
-                            }
-                        }
-                        
-                    }
-                    
-
-                    if (!dataSet.ItemSILDic.ContainsKey(itemList[i]))
-                    {
-                        dataSet.ItemSILDic.Add(itemList[i], new SparseIdList(data.Length));
-                    }
-                    dataSet.ItemSILDic[itemList[i]].AddElement(lineNumber, transactionId);
-                }
-                lineNumber++;
-            }
-
-            dataSet.ComputeFrequentItems();
-            dataSet.CunputeFrequentCMap();
-            return dataSet;
-        }
-        
 //        public static DataSet ReadData(string path, int support)
 //        {
 //            var data = File.ReadAllLines(path);
@@ -186,31 +82,135 @@ namespace FASTX
 //
 //                var transactionId = 1;
 //                var itemList = line.Split(' ');
-//                foreach (var item in itemList)
+//
+//                for (int i = 0; i < itemList.Length; i++)
 //                {
-//                    if (item == ITEMSET_SEPARATOR)
+//                    if (itemList[i] == ITEMSET_SEPARATOR)
 //                    {
 //                        transactionId++;
 //                        continue;
 //                    }
-//                    
-//                    if (item == SEQUENCE_SEPARATOR)
+//                    if (itemList[i] == SEQUENCE_SEPARATOR)
 //                    {
-//                        break;;
+//                        break;
 //                    }
+//                    // used to judge whether need to do CMapIextension operation(indicate whether the two item in the same itemset)
+//                    var samteItemset = true;
+//                    for (int j = i + 1; j < itemList.Length; j++)
+//                    {
+//                        if (itemList[j] == ITEMSET_SEPARATOR)
+//                        {
+//                            // when item is -1 change the value
+//                            samteItemset = false;
+//                            continue;
+//                        }
 //
-//                    if (!dataSet.ItemSILDic.ContainsKey(item))
-//                    {
-//                        dataSet.ItemSILDic.Add(item, new SparseIdList(data.Length));
+//                        if (itemList[j] == SEQUENCE_SEPARATOR)
+//                        {
+//                            break;
+//                        }
+//                        // extension the IExtension CMap
+//                        if (samteItemset)
+//                        {   // if it contain the item[i]
+//                            if (dataSet.CMapIExtension.ContainsKey(itemList[i]))
+//                            {    //whether contain the item[j]
+//                                if (dataSet.CMapIExtension[itemList[i]].ContainsKey(itemList[j]))
+//                                {    // if not contain this line then add it to the dictionay
+//                                    if (!dataSet.CMapIExtension[itemList[i]][itemList[j]].Contains(lineNumber))
+//                                    {
+//                                        dataSet.CMapIExtension[itemList[i]][itemList[j]].Add(lineNumber);
+//                                    }
+//                                }
+//                                else
+//                                {
+//                                    dataSet.CMapIExtension[itemList[i]].Add(itemList[j], new List<int>(){lineNumber});
+//                                }
+//                            }
+//                            else // if not we should init it and add the item[j] whit lineNumber to it
+//                            {
+//                                dataSet.CMapIExtension.Add(itemList[i], new Dictionary<string, List<int>>());
+//                                dataSet.CMapIExtension[itemList[i]].Add(itemList[j], new List<int>(){lineNumber});
+//                            }
+//                        }
+//                        else
+//                        {   // the same with CMapIExtension
+//                            if (dataSet.CMapSExtension.ContainsKey(itemList[i]))
+//                            {
+//                                if (dataSet.CMapSExtension[itemList[i]].ContainsKey(itemList[j]))
+//                                {
+//                                    if (!dataSet.CMapSExtension[itemList[i]][itemList[j]].Contains(lineNumber))
+//                                    {
+//                                        dataSet.CMapSExtension[itemList[i]][itemList[j]].Add(lineNumber);
+//                                    }
+//                                }
+//                                else
+//                                {
+//                                    dataSet.CMapSExtension[itemList[i]].Add(itemList[j], new List<int>(){lineNumber});
+//                                }
+//                            }
+//                            else
+//                            {
+//                                dataSet.CMapSExtension.Add(itemList[i], new Dictionary<string, List<int>>());
+//                                dataSet.CMapSExtension[itemList[i]].Add(itemList[j], new List<int>(){lineNumber});
+//                            }
+//                        }
+//                        
 //                    }
-//                    dataSet.ItemSILDic[item].AddElement(lineNumber, transactionId);
+//                    
+//
+//                    if (!dataSet.ItemSILDic.ContainsKey(itemList[i]))
+//                    {
+//                        dataSet.ItemSILDic.Add(itemList[i], new SparseIdList(data.Length));
+//                    }
+//                    dataSet.ItemSILDic[itemList[i]].AddElement(lineNumber, transactionId);
 //                }
 //                lineNumber++;
 //            }
 //
 //            dataSet.ComputeFrequentItems();
+//            dataSet.CunputeFrequentCMap();
 //            return dataSet;
 //        }
+        
+        public static DataSet ReadData(string path, int support)
+        {
+            var data = File.ReadAllLines(path);
+            var dataSet = new DataSet(data.Length, support);
+            int lineNumber = 0;
+            foreach (var line in data)
+            {
+                if (line.Length == 0)
+                {
+                   continue;
+                }
+
+                var transactionId = 1;
+                var itemList = line.Split(' ');
+                foreach (var item in itemList)
+                {
+                    if (item == ITEMSET_SEPARATOR)
+                    {
+                        transactionId++;
+                        continue;
+                    }
+                    
+                    if (item == SEQUENCE_SEPARATOR)
+                    {
+                        break;;
+                    }
+
+                    if (!dataSet.ItemSILDic.ContainsKey(item))
+                    {
+                        dataSet.ItemSILDic.Add(item, new SparseIdList(data.Length));
+                    }
+                    dataSet.ItemSILDic[item].AddElement(lineNumber, transactionId);
+                }
+                lineNumber++;
+            }
+
+            dataSet.ComputeFrequentItems();
+            return dataSet;
+        }
 
         /// <summary>
         /// delete those item which not satisfy the support condition

@@ -76,6 +76,12 @@ namespace FASTX
             for (int i = node.Position + 1; i < children.Count; i++)
             {
                 var rightBrother = children[i];
+//                var rightBrotherLastItem = rightBrother.Itemset.Last();
+//                var nodeLastItem = node.Itemset.Last();
+//                if (!DataSet.CMapIExtension.ContainsKey(nodeLastItem) || !DataSet.CMapIExtension[nodeLastItem].ContainsKey(rightBrotherLastItem))
+//                {
+//                    continue;
+//                }
                 var SIL = SparseIdList.IStep(node.SparseIdList, rightBrother.SparseIdList);
                 if (SIL.Support >= DataSet.MinSupport)
                 {
