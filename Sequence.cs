@@ -74,6 +74,10 @@ namespace FASTX
         /// </summary>
         private List<Itemset<T>> Elements = new List<Itemset<T>>();
 
+        /// <summary>
+        /// store the relative position of each itemset in the sequence
+        /// </summary>
+        private List<int> RelativePosition = new List<int>();
         public List<Itemset<T>> GetElements => Elements;
 
     }
