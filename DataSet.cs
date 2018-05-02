@@ -229,12 +229,18 @@ namespace FASTX
             ItemSILDic = newDic;
         }
 
+        /// <summary>
+        /// delete the patterns which not satisfy the support condition
+        /// </summary>
         public void CunputeFrequentCMap()
         {
+            // can not use foreach statement if we widd do Add or Remore operation 
+            // because Collection was modified ,enumeration operation can not exexute
             var cMapIExtensionKeys = CMapIExtension.Keys.ToArray();
             var cMapSExtensionKeys = CMapSExtension.Keys.ToArray();
             for (int i = 0; i < cMapIExtensionKeys.Length; i++)
             {
+                // if
                 var cMapIExtensionValuesKeys = CMapIExtension[cMapIExtensionKeys[i]].Keys.ToArray();
                 for (int j = 0; j < cMapIExtensionValuesKeys.Length; j++)
                 {
