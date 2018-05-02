@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace FASTX
 {
@@ -167,6 +168,7 @@ namespace FASTX
             }
 
             dataSet.ComputeFrequentItems();
+            dataSet.CunputeFrequentCMap();
             return dataSet;
         }
         
@@ -225,6 +227,76 @@ namespace FASTX
             }
 
             ItemSILDic = newDic;
+        }
+
+        public void CunputeFrequentCMap()
+        {
+            var cMapIExtensionKeys = CMapIExtension.Keys.ToArray();
+            var cMapSExtensionKeys = CMapSExtension.Keys.ToArray();
+            for (int i = 0; i < cMapIExtensionKeys.Length; i++)
+            {
+                var cMapIExtensionValuesKeys = CMapIExtension[cMapIExtensionKeys[i]].Keys.ToArray();
+                for (int j = 0; j < cMapIExtensionValuesKeys.Length; j++)
+                {
+                    if (CMapIExtension[cMapIExtensionKeys[i]][cMapIExtensionValuesKeys[j]].Count < MinSupport)
+                    {
+                        CMapIExtension[cMapIExtensionKeys[i]].Remove(cMapIExtensionValuesKeys[j]);
+                    }
+                }
+
+                if (CMapIExtension[cMapIExtensionKeys[i]].Count == 0)
+                {
+                    CMapIExtension.Remove(cMapIExtensionKeys[i]);
+                }
+
+            }
+            for (int i = 0; i < cMapSExtensionKeys.Length; i++)
+            {
+                var cMapSExtensionValuesKeys = CMapSExtension[cMapSExtensionKeys[i]].Keys.ToArray();
+                for (int j = 0; j < cMapSExtensionValuesKeys.Length; j++)
+                {
+                    if (CMapSExtension[cMapSExtensionKeys[i]][cMapSExtensionValuesKeys[j]].Count < MinSupport)
+                    {
+                        CMapSExtension[cMapSExtensionKeys[i]].Remove(cMapSExtensionValuesKeys[j]);
+                    }
+                }
+
+                if (CMapSExtension[cMapSExtensionKeys[i]].Count == 0)
+                {
+                    CMapSExtension.Remove(cMapSExtensionKeys[i]);
+                }
+
+            }
+//            foreach (var keyValue in CMapIExtension)
+//            {
+//                foreach (var iExtension in keyValue.Value)
+//                {
+//                    if (iExtension.Value.Count < MinSupport)
+//                    {
+//                        CMapIExtension[keyValue.Key].Remove(iExtension.Key);
+//                    }
+//                }
+//
+//                if (keyValue.Value.Count == 0)
+//                {
+//                    CMapIExtension.Remove(keyValue.Key);
+//                }
+//            }
+//            foreach (var keyValue in CMapSExtension)
+//            {
+//                foreach (var iExtension in keyValue.Value)
+//                {
+//                    if (iExtension.Value.Count < MinSupport)
+//                    {
+//                        CMapSExtension[keyValue.Key].Remove(iExtension.Key);
+//                    }
+//                }
+//
+//                if (keyValue.Value.Count == 0)
+//                {
+//                    CMapSExtension.Remove(keyValue.Key);
+//                }
+//            }
         }
 
         public Dictionary<string, SparseIdList> GetItemSILDic()

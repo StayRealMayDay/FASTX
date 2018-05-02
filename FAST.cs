@@ -77,7 +77,7 @@ namespace FASTX
             {
                 var rightBrother = children[i];
                 var SIL = SparseIdList.IStep(node.SparseIdList, rightBrother.SparseIdList);
-                if (SIL.Support > DataSet.MinSupport)
+                if (SIL.Support >= DataSet.MinSupport)
                 {
                     var newItemset = node.Itemset.Clone();
                     newItemset.AddItems(rightBrother.Itemset.Last());
@@ -190,7 +190,7 @@ namespace FASTX
                 // if the have the relative position sequence if frequent, create its VIL and then insert in to the tree with its VIL
                 foreach (var keyValue in positionDic)
                 {
-                    if (keyValue.Value.Count > DataSet.MinSupport)
+                    if (keyValue.Value.Count >= DataSet.MinSupport)
                     {
                         foreach (var sequenceIdWithListNode in keyValue.Value)
                         {
