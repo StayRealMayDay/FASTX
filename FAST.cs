@@ -211,8 +211,8 @@ namespace FASTX
                             newPositionList[sequenceIdWithListNode.Key] = sequenceIdWithListNode.Value;
                         }
                         var sequence = node.Sequence.Clone();
-                        sequence.AddItemset(brotherNode.Sequence.GetLastItemset());
-//                        sequence.AddItemsetWithRelativePosition(brotherNode.Sequence.GetLastItemset(), keyValue.Key);
+//                        sequence.AddItemset(brotherNode.Sequence.GetLastItemset());
+                        sequence.AddItemsetWithRelativePosition(brotherNode.Sequence.GetLastItemset(), keyValue.Key);
                         sequenceTree.AddChild(node, sequence, new VerticalIdList(newPositionList, keyValue.Value.Count),
                             keyValue.Value.Count);
                     }
